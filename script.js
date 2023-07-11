@@ -14,8 +14,6 @@ function divide(num1, num2){
     return num1 / num2;
 }
 
-let num1, num2 = null;
-let operator = null;
 
 function operate(operator, num1, num2){
     num1 = Number(num1);
@@ -56,6 +54,12 @@ function parseOperator(operator){
     }
 }
 
+function deleteNum(){
+    if(resultDisplay.textContent != ""){
+        resultDisplay.textContent = resultDisplay.textContent.slice(0, -1);
+    }
+}
+
 let currentNum = "", currentResult = "";
 let currOperator = null;
 
@@ -66,10 +70,6 @@ const calculation = document.querySelector('.calculation');
 const resultDisplay = document.querySelector('.result');
 
 //Define operator buttons
-const addButton = document.querySelector('.add');
-const substractButton = document.querySelector('.substract');
-const multiplyButton = document.querySelector('.multiply');
-const divideButton = document.querySelector('.divide');
 const operators = document.querySelectorAll('.operator');
 operators.forEach(item => {
     item.addEventListener('click', () => {   
@@ -77,7 +77,8 @@ operators.forEach(item => {
             currentNum = operate(parseOperator(currOperator), currentNum, resultDisplay.textContent);
             calculation.textContent = currentNum + " " + currOperator;
             resultDisplay.textContent = "";
-
+            equalBtn.disabled = false;
+            decimalBtn.disabled = false;
         }   
 
         currOperator = item.textContent;
@@ -85,8 +86,12 @@ operators.forEach(item => {
             currentNum = resultDisplay.textContent;
             calculation.textContent = currentNum + " " + currOperator;
             resultDisplay.textContent = "";
+            decimalBtn.disabled = false;
+            equalBtn.disabled = false;
         }else if(currentNum != "" && resultDisplay.textContent == ""){
             calculation.textContent = currentNum + " " + currOperator;
+            decimalBtn.disabled = false;
+            equalBtn.disabled = false;
         }                   
 
     })
@@ -118,7 +123,22 @@ zero.addEventListener('click', function(){updateResult("0");});
 const clearBtn = document.querySelector('.clear');
 clearBtn.addEventListener('click', clear);
 const deleteBtn = document.querySelector('.delete');
+deleteBtn.addEventListener('click', deleteNum);
 
 const decimalBtn = document.querySelector('.decimal');
+decimalBtn.addEventListener('click', function(){
+    updateResult(".");
+    decimalBtn.disabled = true;
+});
 
 const equalBtn = document.querySelector('.equal');
+equalBtn.addEventListener('click', () => {
+    if(currentNum != "" && resultDisplay.textContent != ""){
+        currentResult = operate(parseOperator(currOperator), currentNum, resultDisplay.textContent);
+        calculation.textContent = currentNum + " " + currOperator + " "+ resultDisplay.textContent + " = " +currentResult;
+        currentNum = currentResult;
+        resultDisplay.textContent = "";
+        equalBtn.disabled = true;
+        decimalBtn.disabled = false;
+    }
+})
