@@ -45,6 +45,10 @@ function updateResult(number){
     resultDisplay.textContent += number;
 }
 
+let firstNum, secNum, currOperator = null;
+
+
+
 //Define displays
 const calculation = document.querySelector('.calculation');
 const resultDisplay = document.querySelector('.result');
@@ -54,6 +58,21 @@ const addButton = document.querySelector('.add');
 const substractButton = document.querySelector('.substract');
 const multiplyButton = document.querySelector('.multiply');
 const divideButton = document.querySelector('.divide');
+const operators = document.querySelectorAll('.operator');
+operators.forEach(item => {
+    item.addEventListener('click', () => {   
+        currOperator = item.textContent;
+    
+        if(resultDisplay.textContent != ""){
+            firstNum = Number(resultDisplay.textContent);
+        }
+        if(firstNum != null){
+            calculation.textContent = firstNum + " " + currOperator;
+        }
+        
+        resultDisplay.textContent = "";                         
+    })
+})
 
 //Define all digits
 const one = document.querySelector('.one');
@@ -84,3 +103,4 @@ const deleteBtn = document.querySelector('.delete');
 
 const decimalBtn = document.querySelector('.decimal');
 
+const equalBtn = document.querySelector('.equal');
