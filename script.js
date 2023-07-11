@@ -18,6 +18,8 @@ let num1, num2 = null;
 let operator = null;
 
 function operate(operator, num1, num2){
+    num1 = Number(num1);
+    num2 = Number(num2);
     let result = null;
     switch(operator){
         case '+':
@@ -39,13 +41,23 @@ function operate(operator, num1, num2){
 function clear(){
     calculation.textContent = "";
     resultDisplay.textContent = "";
+    currentNum = "";
 }
 
 function updateResult(number){
     resultDisplay.textContent += number;
 }
 
-let firstNum, secNum, currOperator = null;
+function parseOperator(operator){
+    if(operator == 'x'){
+        return '*';
+    }else{
+        return operator;
+    }
+}
+
+let currentNum = "", currentResult = "";
+let currOperator = null;
 
 
 
@@ -61,16 +73,22 @@ const divideButton = document.querySelector('.divide');
 const operators = document.querySelectorAll('.operator');
 operators.forEach(item => {
     item.addEventListener('click', () => {   
+        if(currentNum != "" && resultDisplay.textContent != ""){
+            currentNum = operate(parseOperator(currOperator), currentNum, resultDisplay.textContent);
+            calculation.textContent = currentNum + " " + currOperator;
+            resultDisplay.textContent = "";
+
+        }   
+
         currOperator = item.textContent;
-    
-        if(resultDisplay.textContent != ""){
-            firstNum = Number(resultDisplay.textContent);
-        }
-        if(firstNum != null){
-            calculation.textContent = firstNum + " " + currOperator;
-        }
-        
-        resultDisplay.textContent = "";                         
+        if(currentNum == "" && resultDisplay.textContent != ""){
+            currentNum = resultDisplay.textContent;
+            calculation.textContent = currentNum + " " + currOperator;
+            resultDisplay.textContent = "";
+        }else if(currentNum != "" && resultDisplay.textContent == ""){
+            calculation.textContent = currentNum + " " + currOperator;
+        }                   
+
     })
 })
 
