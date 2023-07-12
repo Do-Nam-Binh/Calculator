@@ -60,10 +60,17 @@ function deleteNum(){
     }
 }
 
+
 let currentNum = "", currentResult = "";
 let currOperator = null;
 
 
+function updateDisplays(){
+    calculation.textContent = currentNum + " " + currOperator;
+    resultDisplay.textContent = "";
+    equalBtn.disabled = false;
+    decimalBtn.disabled = false;
+}
 
 //Define displays
 const calculation = document.querySelector('.calculation');
@@ -72,52 +79,29 @@ const resultDisplay = document.querySelector('.result');
 //Define operator buttons
 const operators = document.querySelectorAll('.operator');
 operators.forEach(item => {
-    item.addEventListener('click', () => {   
+    item.addEventListener('click', () => {
+       
         if(currentNum != "" && resultDisplay.textContent != ""){
             currentNum = operate(parseOperator(currOperator), currentNum, resultDisplay.textContent);
-            calculation.textContent = currentNum + " " + currOperator;
-            resultDisplay.textContent = "";
-            equalBtn.disabled = false;
-            decimalBtn.disabled = false;
+            updateDisplays();
         }   
 
         currOperator = item.textContent;
         if(currentNum == "" && resultDisplay.textContent != ""){
             currentNum = resultDisplay.textContent;
-            calculation.textContent = currentNum + " " + currOperator;
-            resultDisplay.textContent = "";
-            decimalBtn.disabled = false;
-            equalBtn.disabled = false;
-        }else if(currentNum != "" && resultDisplay.textContent == ""){
-            calculation.textContent = currentNum + " " + currOperator;
-            decimalBtn.disabled = false;
-            equalBtn.disabled = false;
-        }                   
+            updateDisplays();
 
+        }else if(currentNum != "" && resultDisplay.textContent == ""){
+            updateDisplays();
+        }               
     })
 })
 
 //Define all digits
-const one = document.querySelector('.one');
-one.addEventListener('click', function(){updateResult("1");});
-const two = document.querySelector('.two');
-two.addEventListener('click', function(){updateResult("2");});
-const three = document.querySelector('.three');
-three.addEventListener('click', function(){updateResult("3");});
-const four = document.querySelector('.four');
-four.addEventListener('click', function(){updateResult("4");});
-const five = document.querySelector('.five');
-five.addEventListener('click', function(){updateResult("5");});
-const six = document.querySelector('.six');
-six.addEventListener('click', function(){updateResult("6");});
-const seven = document.querySelector('.seven');
-seven.addEventListener('click', function(){updateResult("7");});
-const eight = document.querySelector('.eight');
-eight.addEventListener('click', function(){updateResult("8");});
-const nine = document.querySelector('.nine');
-nine.addEventListener('click', function(){updateResult("9");});
-const zero = document.querySelector('.zero');
-zero.addEventListener('click', function(){updateResult("0");});
+const digits = document.querySelectorAll('.digits');
+digits.forEach(digit => {
+    digit.addEventListener('click', function(){updateResult(digit.textContent)});
+});
 
 
 const clearBtn = document.querySelector('.clear');
@@ -140,5 +124,58 @@ equalBtn.addEventListener('click', () => {
         resultDisplay.textContent = "";
         equalBtn.disabled = true;
         decimalBtn.disabled = false;
+        
+    }
+})
+
+document.addEventListener("keydown", (e) => {
+    key = e.key;
+    switch(key){
+        case "0":
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+            console.log(key);
+            updateResult(key);
+            break;
+        case "Backspace":
+            deleteNum();
+            break;
+        case "+":
+        case "-":
+        case "/":
+        case "x":
+            if(currentNum != "" && resultDisplay.textContent != ""){
+                currentNum = operate(parseOperator(currOperator), currentNum, resultDisplay.textContent);
+                updateDisplays();
+            }   
+    
+            currOperator = key;
+            if(currentNum == "" && resultDisplay.textContent != ""){
+                currentNum = resultDisplay.textContent;
+                updateDisplays();
+    
+            }else if(currentNum != "" && resultDisplay.textContent == ""){
+                updateDisplays();
+            }      
+            e.preventDefault();
+            break;
+        case "=":
+            if(currentNum != "" && resultDisplay.textContent != ""){
+                currentResult = operate(parseOperator(currOperator), currentNum, resultDisplay.textContent);
+                calculation.textContent = currentNum + " " + currOperator + " "+ resultDisplay.textContent + " = " +currentResult;
+                currentNum = currentResult;
+                resultDisplay.textContent = "";
+                equalBtn.disabled = true;
+                decimalBtn.disabled = false;
+                
+            }
+            break;
     }
 })
